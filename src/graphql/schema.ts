@@ -13,5 +13,6 @@ type Query {
 type Mutation {
   addTodo(title: String!): Todo!
   toggleTodo(id: Int!): Todo!
+  deleteTodo(id: Int!): Boolean!
 }
 `;

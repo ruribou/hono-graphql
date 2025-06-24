@@ -23,6 +23,12 @@ const rootResolver: RootResolver = () => ({
       data: { completed: !todo.completed },
     });
   },
+  deleteTodo: async ({ id }: { id: number }) => {
+    const todo = await prisma.todo.findUnique({ where: { id } });
+    if (!todo) return false;
+    await prisma.todo.delete({ where: { id } });
+    return true;
+  },
 });
 
 app.use(
