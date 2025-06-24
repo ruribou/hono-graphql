@@ -8,20 +8,38 @@ const app = new Hono()
 const schema = buildSchema(originalSchema)
 const prisma = new PrismaClient()
 
+function formatDate(date: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  const jst = new Date(date.getTime() + 9 * 60 * 60 * 1000); // JSTに変換
+  return `${jst.getFullYear()}-${pad(jst.getMonth() + 1)}-${pad(jst.getDate())} ${pad(jst.getHours())}:${pad(jst.getMinutes())}:${pad(jst.getSeconds())}`;
+}
+
 const rootResolver: RootResolver = () => ({
   todos: async () => {
-    return await prisma.todo.findMany({ orderBy: { createdAt: 'desc' } });
+    const todos = await prisma.todo.findMany({ orderBy: { createdAt: 'desc' } });
+    return todos.map(todo => ({
+      ...todo,
+      createdAt: formatDate(todo.createdAt),
+    }));
   },
   addTodo: async ({ title }: { title: string }) => {
-    return await prisma.todo.create({ data: { title } });
+    const todo = await prisma.todo.create({ data: { title } });
+    return {
+      ...todo,
+      createdAt: formatDate(todo.createdAt),
+    };
   },
   toggleTodo: async ({ id }: { id: number }) => {
     const todo = await prisma.todo.findUnique({ where: { id } });
     if (!todo) throw new Error('Not found');
-    return await prisma.todo.update({
+    const updated = await prisma.todo.update({
       where: { id },
       data: { completed: !todo.completed },
     });
+    return {
+      ...updated,
+      createdAt: formatDate(updated.createdAt),
+    };
   },
   deleteTodo: async ({ id }: { id: number }) => {
     const todo = await prisma.todo.findUnique({ where: { id } });
