@@ -1,5 +1,17 @@
 export const schema = `
+type Todo {
+  id: Int!
+  title: String!
+  completed: Boolean!
+  createdAt: String!
+}
+
 type Query {
-  hello: String
+  todos: [Todo!]!
+}
+
+type Mutation {
+  addTodo(title: String!): Todo!
+  toggleTodo(id: Int!): Todo!
 }
 `;
