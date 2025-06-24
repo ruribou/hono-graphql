@@ -5,8 +5,10 @@
   },
   "dependencies": {
     "@hono/graphql-server": "^0.6.2",
+    "@prisma/client": "^6.10.1",
     "graphql": "^16.11.0",
-    "hono": "^4.8.2"
+    "hono": "^4.8.2",
+    "prisma": "^6.10.1"
   },
   "devDependencies": {
     "@types/bun": "latest"
